@@ -1,6 +1,6 @@
 FROM microsoft/iis
 
-MAINTAINER Salvatore Realmuto <https://github.com/takhyon>
+LABEL Version=1.0
 
 RUN powershell -NoProfile -Command \
     Add-WindowsFeature NET-Framework-45-ASPNET; \
@@ -16,6 +16,9 @@ RUN powershell -NoProfile -Command \
 RUN powershell -NoProfile -Command \
     choco install chocolatey.server -y; \
     Remove-Item -Path C:\tools\chocolatey.server\App_Data\Packages\Readme.txt
+
+RUN powershell -NoProfile -Command \
+    (Get-Content -Path "C:\tools\chocolatey.server\Web.config") -replace ('chocolateyrocks','somethingSecure') ^| Out-File -filepath C:\tools\chocolatey.server\Web.config -Encoding "UTF8"
 
 RUN powershell -NoProfile -Command \
     New-WebAppPool -Name chocolatey.server; \
